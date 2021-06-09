@@ -8,12 +8,14 @@ const {
   updatePassword,
   updateProfile,
   updateImage,
-  getAllData
+  getAllData,
+  updateUserBalance
 } = require('./user_controller')
 
 Route.patch('/pin/:id', updatePin)
 Route.patch('/password/:id', updatePassword)
 Route.patch('/profile/:id', updateProfile)
+Route.patch('/balance/:id', updateUserBalance)
 Route.patch('/image/:id', uploadImage, updateImage)
 Route.get('/:id', getUserDataById)
 Route.get('/', getAllData)

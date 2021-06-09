@@ -33,7 +33,7 @@ module.exports = {
       )
     })
   },
-  updateData: (setData, condition, userData) => {
+  updateData: (setData, condition) => {
     return new Promise((resolve, reject) => {
       connection.query(
         'UPDATE user SET ? WHERE ?',

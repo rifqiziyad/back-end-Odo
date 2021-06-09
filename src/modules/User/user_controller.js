@@ -181,5 +181,25 @@ module.exports = {
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
+  },
+  updateUserBalance: async (req, res) => {
+    try {
+      const { userBalance } = req.body
+      const { id } = req.params
+      const userId = { user_id: id }
+      const setData = {
+        user_balance: userBalance,
+        user_updated_at: new Date(Date.now())
+      }
+      const checkUserData = await userModel.getUserDataByCondition(userId)
+      if (checkUserData.length > 0) {
+        const result = await userModel.updateData(setData, userId)
+        return helper.response(res, 200, 'Succes Update Balance', result)
+      } else {
+        return helper.response(res, 404, `Data User By Id: ${id} Not Found`)
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
   }
 }
