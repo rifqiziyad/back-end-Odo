@@ -15,7 +15,7 @@ module.exports = {
   getDataCount: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT COUNT(*) AS total FROM `friend` JOIN user ON friend.friend_receiver_id = user.user_id WHERE friend.friend_user_id = ?',
+        `SELECT COUNT(*) AS total FROM user WHERE user_id != ${id}`,
         id,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))
@@ -26,7 +26,7 @@ module.exports = {
   getAllUserData: (id, search, sort, limit, offset) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT * FROM friend JOIN user ON friend.friend_receiver_id = user.user_id WHERE friend.friend_user_id = ${id} AND user.user_name LIKE '%${search}%' ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`,
+        `SELECT * FROM user WHERE user_id != ${id} AND user_name LIKE '%${search}%' ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }
@@ -39,6 +39,7 @@ module.exports = {
         'UPDATE user SET ? WHERE ?',
         [setData, condition],
         (error, result) => {
+          console.log(error)
           if (!error) {
             const newResult = {
               ...condition,

@@ -185,18 +185,51 @@ module.exports = {
   updateUserBalance: async (req, res) => {
     try {
       const { userBalance } = req.body
-      const { id } = req.params
-      const userId = { user_id: id }
-      const setData = {
-        user_balance: userBalance,
+      const { SenderId, ReceiverId } = req.query
+      const userSenderId = { user_id: SenderId }
+      const userReceiverId = { user_id: ReceiverId }
+
+      const checkUserSenderData = await userModel.getUserDataByCondition(
+        userSenderId
+      )
+      const checkUserReceiverData = await userModel.getUserDataByCondition(
+        userReceiverId
+      )
+      let receiverBalance
+      if (checkUserReceiverData[0].user_balance === '') {
+        receiverBalance = 0
+      } else {
+        receiverBalance = parseInt(checkUserReceiverData[0].user_balance)
+      }
+
+      const setDataSender = {
+        user_balance:
+          parseInt(checkUserSenderData[0].user_balance) - parseInt(userBalance),
         user_updated_at: new Date(Date.now())
       }
-      const checkUserData = await userModel.getUserDataByCondition(userId)
-      if (checkUserData.length > 0) {
-        const result = await userModel.updateData(setData, userId)
-        return helper.response(res, 200, 'Succes Update Balance', result)
+      const setDataReceiver = {
+        user_balance: receiverBalance + parseInt(userBalance),
+        user_updated_at: new Date(Date.now())
+      }
+      if (checkUserSenderData.length > 0 && checkUserReceiverData.length > 0) {
+        const resultSender = await userModel.updateData(
+          setDataSender,
+          userSenderId
+        )
+        const resultReceiver = await userModel.updateData(
+          setDataReceiver,
+          userReceiverId
+        )
+        return helper.response(res, 200, 'Succes Update Balance', [
+          resultSender,
+          resultReceiver
+        ])
       } else {
-        return helper.response(res, 404, `Data User By Id: ${id} Not Found`)
+        return helper.response(
+          res,
+          404,
+          `Data User Sender By Id: ${SenderId} Or User Receiver By Id: ${ReceiverId} Not Found`
+        )
       }
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
