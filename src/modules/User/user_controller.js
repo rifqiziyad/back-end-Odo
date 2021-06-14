@@ -98,26 +98,40 @@ module.exports = {
   },
   updatePassword: async (req, res) => {
     try {
-      const { newPassword, confirmPassword } = req.body
+      const { currentPassword, newPassword, confirmPassword } = req.body
       const { id } = req.params
       const userId = {
         user_id: id
       }
-      const userPassword = newPassword === confirmPassword
+      const checkNewPassword = newPassword === confirmPassword
 
       const checkUserData = await userModel.getUserDataByCondition(userId)
 
+      const checkCurrentPassword = bcrypt.compareSync(
+        currentPassword,
+        checkUserData[0].user_password
+      )
+
       if (checkUserData.length > 0) {
-        if (userPassword) {
-          const salt = bcrypt.genSaltSync(10)
-          const encryptPassword = bcrypt.hashSync(confirmPassword, salt)
-          const setData = {
-            user_password: encryptPassword
+        if (checkCurrentPassword === true) {
+          if (checkNewPassword) {
+            const salt = bcrypt.genSaltSync(10)
+            const encryptPassword = bcrypt.hashSync(confirmPassword, salt)
+            const setData = {
+              user_password: encryptPassword
+            }
+            const result = await userModel.updateData(setData, userId)
+            return helper.response(res, 200, 'Succes Update Password', result)
+          } else {
+            return helper.response(
+              res,
+              403,
+              "New password and confirm password didn't match",
+              null
+            )
           }
-          const result = await userModel.updateData(setData, userId)
-          return helper.response(res, 200, 'Succes Update Password', result)
         } else {
-          return helper.response(res, 403, "password didn't match", null)
+          return helper.response(res, 405, 'Wrong current password', null)
         }
       } else {
         return helper.response(
