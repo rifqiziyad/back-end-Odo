@@ -49,5 +49,47 @@ module.exports = {
         }
       )
     })
+  },
+  getTransactionBySenderId: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM transaction JOIN user ON transaction.transaction_receiver_id = user.user_id WHERE transaction_sender_id = ${id} ORDER BY transaction_id DESC LIMIT 50`,
+        (error, result) => {
+          console.log(error)
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  getTransactionByReceiverId: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM transaction JOIN user ON transaction.transaction_sender_id = user.user_id WHERE transaction_receiver_id = ${id} ORDER BY transaction_id DESC LIMIT 50`,
+        (error, result) => {
+          console.log(error)
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  filterTransactionData: (id, condition) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM transaction WHERE (transaction_sender_id = ${id} OR transaction_receiver_id = ${id}) ${condition} ORDER BY transaction_id DESC LIMIT 10`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  transactionDataByDayOnWeek: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT DAY(transaction_created_at) AS Day, SUM(transaction_amount) AS Total FROM transaction WHERE WEEK(transaction_created_at) = WEEK(NOW()) AND transaction_sender_id = ${id} GROUP BY DAY(transaction_created_at)`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
   }
 }

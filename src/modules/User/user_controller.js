@@ -248,5 +248,22 @@ module.exports = {
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
+  },
+  verificationAccount: async (req, res) => {
+    try {
+      const { id } = req.params
+      const setData = {
+        user_verify: 1
+      }
+      const getUserId = await userModel.getUserDataByCondition({ user_id: id })
+      await userModel.updateData(setData, { user_id: id })
+      if (getUserId.length > 0) {
+        return helper.response(res, 200, 'Succes User Verification')
+      } else {
+        return helper.response(res, 404, `Data By Id ${id} Not Found`, null)
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
   }
 }

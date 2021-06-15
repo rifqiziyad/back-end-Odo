@@ -7,7 +7,6 @@ module.exports = {
         'SELECT * FROM user WHERE ?',
         condition,
         (error, result) => {
-          console.log(error)
           !error ? resolve(result) : reject(new Error(error))
         }
       )

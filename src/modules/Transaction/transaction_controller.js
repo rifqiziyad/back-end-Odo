@@ -37,7 +37,78 @@ module.exports = {
         )
       }
     } catch (error) {
-      helper.response(res, 400, 'Bad Request', error)
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  getTransactionHistory: async (req, res) => {
+    try {
+      const { id } = req.params
+      const resultSender = await transactionModel.getTransactionBySenderId(id)
+      const resultReceiver = await transactionModel.getTransactionByReceiverId(
+        id
+      )
+      const result = [...resultSender, ...resultReceiver]
+      result
+        .sort((a, b) => {
+          return a.transaction_id - b.transaction_id
+        })
+        .reverse()
+
+      return helper.response(
+        res,
+        200,
+        'Success Get Transaction History',
+        result.slice(0, 5)
+      )
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  getTransferDataByWeek: async (req, res) => {
+    try {
+      const { id } = req.params
+      const condition =
+        ' AND YEARWEEK(transaction_created_at, 1) = YEARWEEK(CURDATE(), 1)'
+      const result = await transactionModel.filterTransactionData(id, condition)
+      return helper.response(
+        res,
+        200,
+        'Success Get Transaction By Week',
+        result
+      )
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  getTransferDataByMonth: async (req, res) => {
+    try {
+      const { id } = req.params
+      const condition = ' AND MONTH(transaction_created_at) = MONTH(CURDATE())'
+      const result = await transactionModel.filterTransactionData(id, condition)
+      return helper.response(
+        res,
+        200,
+        'Success Get Transaction By Month',
+        result
+      )
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  getTransactionDataByDayOnWeek: async (req, res) => {
+    try {
+      const { id } = req.params
+      const checkIdUser = await transactionModel.getUserDataById({
+        user_id: id
+      })
+      if (checkIdUser.length > 0) {
+        const result = await transactionModel.transactionDataByDayOnWeek(id)
+        return helper.response(res, 200, 'Success Get Data User By Day', result)
+      } else {
+        return helper.response(res, 404, `Id: ${id} not found`, null)
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
     }
   }
 }
