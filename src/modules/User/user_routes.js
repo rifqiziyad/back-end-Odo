@@ -11,13 +11,15 @@ const {
   getAllData,
   updateUserBalance,
   verificationAccount,
-  getUsers
+  getUsers,
+  userTopup
 } = require('./user_controller')
 
 Route.patch('/pin/:id', updatePin)
 Route.patch('/password/:id', updatePassword)
 Route.patch('/profile/:id', updateProfile)
 Route.patch('/balance', updateUserBalance)
+Route.patch('/topup/:id', userTopup)
 Route.patch('/image/:id', uploadImage, updateImage)
 Route.get('/:id', getUserDataById)
 Route.get('/', getAllData)

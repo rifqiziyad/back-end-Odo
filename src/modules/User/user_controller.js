@@ -2,6 +2,7 @@ const helper = require('../../helpers/wrapper')
 const userModel = require('./user_model')
 const bcrypt = require('bcrypt')
 const fs = require('fs')
+const { captureRejections } = require('events')
 
 module.exports = {
   getAllData: async (req, res) => {
@@ -270,6 +271,23 @@ module.exports = {
     try {
       const result = await userModel.getAllUsersData()
       return helper.response(res, 200, 'Success Get All Data', result)
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  userTopup: async (req, res) => {
+    try {
+      const { id } = req.params
+      const { userTopup } = req.body
+      const getDataUser = await userModel.getUserDataByCondition({
+        user_id: id
+      })
+      const setData = {
+        user_balance:
+          parseInt(getDataUser[0].user_balance) + parseInt(userTopup)
+      }
+      const result = await userModel.updateData(setData, { user_id: id })
+      return helper.response(res, 200, 'Success Top Up', result)
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }

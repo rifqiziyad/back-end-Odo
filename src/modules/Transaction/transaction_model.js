@@ -75,7 +75,7 @@ module.exports = {
   filterTransactionData: (id, condition) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT * FROM transaction WHERE (transaction_sender_id = ${id} OR transaction_receiver_id = ${id}) ${condition} ORDER BY transaction_id DESC LIMIT 10`,
+        `SELECT * FROM transaction WHERE (transaction_sender_id = ${id} OR transaction_receiver_id = ${id}) ${condition} ORDER BY transaction_id DESC`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }
