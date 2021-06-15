@@ -70,6 +70,17 @@ module.exports = {
       const condition =
         ' AND YEARWEEK(transaction_created_at, 1) = YEARWEEK(CURDATE(), 1)'
       const result = await transactionModel.filterTransactionData(id, condition)
+
+      for (const value of result) {
+        const conditionId =
+          // eslint-disable-next-line eqeqeq
+          value.transaction_sender_id != id
+            ? value.transaction_sender_id
+            : value.transaction_receiver_id
+        value.user = await transactionModel.getUserDataById({
+          user_id: conditionId
+        })
+      }
       return helper.response(
         res,
         200,
@@ -85,6 +96,16 @@ module.exports = {
       const { id } = req.params
       const condition = ' AND MONTH(transaction_created_at) = MONTH(CURDATE())'
       const result = await transactionModel.filterTransactionData(id, condition)
+      for (const value of result) {
+        const conditionId =
+          // eslint-disable-next-line eqeqeq
+          value.transaction_sender_id != id
+            ? value.transaction_sender_id
+            : value.transaction_receiver_id
+        value.user = await transactionModel.getUserDataById({
+          user_id: conditionId
+        })
+      }
       return helper.response(
         res,
         200,

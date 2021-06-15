@@ -10,7 +10,8 @@ const {
   updateImage,
   getAllData,
   updateUserBalance,
-  verificationAccount
+  verificationAccount,
+  getUsers
 } = require('./user_controller')
 
 Route.patch('/pin/:id', updatePin)
@@ -20,6 +21,7 @@ Route.patch('/balance', updateUserBalance)
 Route.patch('/image/:id', uploadImage, updateImage)
 Route.get('/:id', getUserDataById)
 Route.get('/', getAllData)
+Route.get('/users/all-data', getUsers)
 Route.post('/verification/:id', verificationAccount)
 
 module.exports = Route

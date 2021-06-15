@@ -265,5 +265,13 @@ module.exports = {
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
+  },
+  getUsers: async (req, res) => {
+    try {
+      const result = await userModel.getAllUsersData()
+      return helper.response(res, 200, 'Success Get All Data', result)
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
   }
 }
