@@ -12,10 +12,10 @@ module.exports = {
       )
     })
   },
-  getDataCount: (id) => {
+  getDataCount: (id, search) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT COUNT(*) AS total FROM user WHERE user_id != ${id}`,
+        `SELECT COUNT(*) AS total FROM user WHERE user_id != ${id} AND user_name LIKE '%${search}%'`,
         id,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))

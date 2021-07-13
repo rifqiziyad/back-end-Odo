@@ -21,36 +21,38 @@ module.exports = {
       })
       // cek email
       if (checkEmailUser.length <= 0) {
-        // const transporter = nodemailer.createTransport({
-        //   host: 'smtp.gmail.com',
-        //   port: 587,
-        //   secure: false, // true for 465, false for other ports
-        //   auth: {
-        //     user: process.env.SMTP_EMAIL, // generated ethereal user
-        //     pass: process.env.SMTP_PASSWORD // generated ethereal password
-        //   }
-        // })
-
         const result = await authModel.register(setData)
-        delete result.user_passoword
-        // const mailOptions = {
-        //   from: '"Odo E-Wallet" <rifqiziyad4@gmail.com>', // sender address
-        //   to: userEmail, // list of receivers
-        //   subject: 'Odo E-Wallet - Activation Email', // Subject line
-        //   html: `<b>Click Here to activate </b><form action='http://localhost:3004/backend4/api/v1/user/verification/${result.id}' method="post">
-        //     <button type="submit" name="your_name" value="your_value">Go</button>
-        // </form>` // html body
-        // }
-        // await transporter.sendMail(mailOptions, function (error, info) {
-        //   if (error) {
-        //     console.log(error)
-        //     return helper.response(res, 408, 'Email not send !')
-        //   } else {
-        //     console.log('Email sent:' + info.response)
-        //     return helper.response(res, 200, 'Check Your Email', result)
-        //   }
-        // })
-        return helper.response(res, 200, 'Success Register Account', result)
+        delete result.user_password
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: process.env.SMTP_EMAIL, // generated ethereal user
+            pass: process.env.SMTP_PASSWORD // generated ethereal password
+          }
+        })
+
+        const mailOptions = {
+          from: '"Odo E-Wallet" <rifqiziyad4@gmail.com>', // sender address
+          to: userEmail, // list of receivers
+          subject: 'Odo E-Wallet - Activation Email', // Subject line
+          html: `<b>Click Here to activate </b><a href='http://localhost:3004/backend4/api/v1/user/verification/${result.id}'>
+            Click !</a>` // html body
+        }
+        await transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error)
+          } else {
+            console.log('Email sent: ' + info.response)
+          }
+        })
+        return helper.response(
+          res,
+          200,
+          'Succes register Account, Please Check your Email to Activate your Account !',
+          result
+        )
       } else {
         return helper.response(
           res,
@@ -78,7 +80,7 @@ module.exports = {
           const payload = checkEmailUser[0]
           delete payload.user_password
           const token = jwt.sign({ ...payload }, 'RAHASIA', {
-            expiresIn: '100'
+            expiresIn: '24h'
           })
           const result = { ...payload, token }
           return helper.response(res, 200, 'Succes Login !', result)

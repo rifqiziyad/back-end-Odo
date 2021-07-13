@@ -85,7 +85,7 @@ module.exports = {
   transactionDataByDayOnWeek: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT DAY(transaction_created_at) AS Day, SUM(transaction_amount) AS Total FROM transaction WHERE WEEK(transaction_created_at) = WEEK(NOW()) AND transaction_sender_id = ${id} GROUP BY DAY(transaction_created_at)`,
+        `SELECT DATE(transaction_created_at) AS Date, SUM(transaction_amount) AS Total FROM transaction WHERE WEEK(transaction_created_at) = WEEK(NOW()) AND transaction_sender_id = ${id} GROUP BY DAY(transaction_created_at)`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }

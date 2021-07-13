@@ -1,6 +1,7 @@
 const express = require('express')
 const Route = express.Router()
 const uploadImage = require('../../middleware/uploads')
+const { authentication } = require('../../middleware/auth')
 
 const {
   updatePin,
@@ -15,15 +16,15 @@ const {
   userTopup
 } = require('./user_controller')
 
-Route.patch('/pin/:id', updatePin)
-Route.patch('/password/:id', updatePassword)
-Route.patch('/profile/:id', updateProfile)
+Route.patch('/pin/:id', authentication, updatePin)
+Route.patch('/password/:id', authentication, updatePassword)
+Route.patch('/profile/:id', authentication, updateProfile)
 Route.patch('/balance', updateUserBalance)
-Route.patch('/topup/:id', userTopup)
-Route.patch('/image/:id', uploadImage, updateImage)
-Route.get('/:id', getUserDataById)
-Route.get('/', getAllData)
-Route.get('/users/all-data', getUsers)
-Route.post('/verification/:id', verificationAccount)
+Route.patch('/topup/:id', authentication, userTopup)
+Route.patch('/image/:id', authentication, uploadImage, updateImage)
+Route.get('/:id', authentication, getUserDataById)
+Route.get('/', authentication, getAllData)
+Route.get('/users/all-data', authentication, getUsers)
+Route.get('/verification/:id', verificationAccount)
 
 module.exports = Route

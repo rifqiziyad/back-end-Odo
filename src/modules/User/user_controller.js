@@ -2,7 +2,6 @@ const helper = require('../../helpers/wrapper')
 const userModel = require('./user_model')
 const bcrypt = require('bcrypt')
 const fs = require('fs')
-const { captureRejections } = require('events')
 
 module.exports = {
   getAllData: async (req, res) => {
@@ -20,7 +19,7 @@ module.exports = {
       if (!sort) {
         sort = 'user_id'
       }
-      const totalData = await userModel.getDataCount(userId)
+      const totalData = await userModel.getDataCount(userId, search)
       page = parseInt(page)
       limit = parseInt(limit)
       const totalPage = Math.ceil(totalData / limit)
@@ -178,16 +177,15 @@ module.exports = {
       }
       const checkUserData = await userModel.getUserDataByCondition(userId)
       if (checkUserData.length > 0) {
-        if (checkUserData.length > 0) {
-          const imageToDelete = checkUserData[0].user_image
-          const isImageExist = fs.existsSync(`src/uploads/${imageToDelete}`)
+        const imageToDelete = checkUserData[0].user_image
+        const isImageExist = fs.existsSync(`src/uploads/${imageToDelete}`)
 
-          if (isImageExist && imageToDelete) {
-            fs.unlink(`src/uploads/${imageToDelete}`, (err) => {
-              if (err) throw err
-            })
-          }
+        if (isImageExist && imageToDelete) {
+          fs.unlink(`src/uploads/${imageToDelete}`, (err) => {
+            if (err) throw err
+          })
         }
+
         const result = await userModel.updateData(setData, userId)
         return helper.response(res, 200, 'Success Update Image', result)
       } else {
