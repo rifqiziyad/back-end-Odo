@@ -7,13 +7,15 @@ const {
   getTransactionHistory,
   getTransferDataByWeek,
   getTransferDataByMonth,
-  getTransactionDataByDayOnWeek
+  getTransactionDataByDayOnWeek,
+  exportPdfTransaction
 } = require('./transaction_controller')
 
 Route.post('/', authentication, createTransaction)
 Route.get('/:id', authentication, getTransactionHistory)
-Route.get('/week/:id', authentication, getTransferDataByWeek)
-Route.get('/month/:id', authentication, getTransferDataByMonth)
+Route.get('/week/:id', getTransferDataByWeek)
+Route.get('/month/:id', getTransferDataByMonth)
 Route.get('/day/:id', authentication, getTransactionDataByDayOnWeek)
+Route.get('/export/:id', authentication, exportPdfTransaction)
 
 module.exports = Route

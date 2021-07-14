@@ -1,5 +1,8 @@
 const helper = require('../../helpers/wrapper')
 const transactionModel = require('./transaction_model')
+const ejs = require('ejs')
+const pdf = require('html-pdf')
+const path = require('path')
 
 module.exports = {
   createTransaction: async (req, res) => {
@@ -129,6 +132,75 @@ module.exports = {
         return helper.response(res, 404, `Id: ${id} not found`, null)
       }
     } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  exportPdfTransaction: async (req, res) => {
+    try {
+      const { id } = req.params
+      const {
+        amount,
+        balanceLeft,
+        dateTime,
+        notes,
+        receiverName,
+        receiverPhone
+      } = req.body
+      const fileName = `${id}.pdf`
+      const result = {
+        amount,
+        balanceLeft,
+        dateTime,
+        notes,
+        receiverName,
+        receiverPhone
+      }
+      ejs.renderFile(
+        path.join(__dirname, '../../templates', 'report-transfer-template.ejs'),
+        { result: result },
+        (err, data) => {
+          if (err) {
+            return helper.response(res, 400, 'Failed Export Transaction', err)
+          } else {
+            const options = {
+              height: '11.25in',
+              width: '8.5in',
+              header: {
+                height: '20mm'
+              },
+              footer: {
+                height: '20mm'
+              }
+            }
+            pdf
+              .create(data, options)
+              .toFile(
+                path.join(__dirname, '../../../public/transfer/', fileName),
+                function (err, data) {
+                  if (err) {
+                    return helper.response(
+                      res,
+                      400,
+                      'Failed Export Transaction',
+                      err
+                    )
+                  } else {
+                    return helper.response(
+                      res,
+                      200,
+                      'Success Export File Transaction',
+                      {
+                        url: `http://localhost:3004/backend4/api/${fileName}`
+                      }
+                    )
+                  }
+                }
+              )
+          }
+        }
+      )
+    } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   }

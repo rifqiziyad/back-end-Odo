@@ -72,7 +72,7 @@ module.exports = {
       const checkEmailUser = await authModel.checUserData({
         user_email: userEmail
       })
-      if (checkEmailUser.length > 0) {
+      if (checkEmailUser.length > 0 && checkEmailUser[0].user_verify === '1') {
         const checkPassword = bcrypt.compareSync(
           userPassword,
           checkEmailUser[0].user_password
@@ -93,7 +93,12 @@ module.exports = {
           return helper.response(res, 404, 'Wrong Password')
         }
       } else {
-        return helper.response(res, 404, 'Account not registered', null)
+        return helper.response(
+          res,
+          404,
+          'Account not registered / not verified',
+          null
+        )
       }
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)

@@ -22,9 +22,9 @@ Route.patch('/profile/:id', authentication, updateProfile)
 Route.patch('/balance', updateUserBalance)
 Route.patch('/topup/:id', authentication, userTopup)
 Route.patch('/image/:id', authentication, uploadImage, updateImage)
-Route.get('/:id', authentication, getUserDataById)
+Route.get('/:id', getUserDataById)
 Route.get('/', authentication, getAllData)
-Route.get('/users/all-data', authentication, getUsers)
+Route.get('/users/all-data', getUsers)
 Route.get('/verification/:id', verificationAccount)
 
 module.exports = Route
