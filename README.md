@@ -1,6 +1,6 @@
 <h1 align="center">ExpressJS - Odo RESTfull API</h1>
 
-This is a chat website with realtime using socket.io.
+This is a web e-wallet useful for saving money used for online transactions
 
 [More about Express](https://en.wikipedia.org/wiki/Express.js)
 
