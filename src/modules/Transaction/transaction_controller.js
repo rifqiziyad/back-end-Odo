@@ -137,6 +137,8 @@ module.exports = {
   },
   exportPdfTransaction: async (req, res) => {
     try {
+      console.log(req.body)
+      console.log(req.params)
       const { id } = req.params
       const {
         amount,
@@ -155,6 +157,7 @@ module.exports = {
         receiverName,
         receiverPhone
       }
+
       ejs.renderFile(
         path.join(__dirname, '../../templates', 'report-transfer-template.ejs'),
         { result: result },
