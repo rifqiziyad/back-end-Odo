@@ -38,7 +38,7 @@ module.exports = {
           from: '"Odo E-Wallet" <rifqiziyad4@gmail.com>', // sender address
           to: userEmail, // list of receivers
           subject: 'Odo E-Wallet - Activation Email', // Subject line
-          html: `<b>Click Here to activate </b><a href='http://localhost:3004/backend4/api/v1/user/verification/${result.id}'>
+          html: `<b>Click Here to activate </b><a href='https://odo-wallet.herokuapp.com/backend4/api/v1/user/verification/${result.id}'>
             Click !</a>` // html body
         }
         await transporter.sendMail(mailOptions, function (error, info) {

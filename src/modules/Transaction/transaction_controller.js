@@ -193,7 +193,7 @@ module.exports = {
                       200,
                       'Success Export File Transaction',
                       {
-                        url: `http://localhost:3004/backend4/api/${fileName}`
+                        url: `https://odo-wallet.herokuapp.com/backend4/api/${fileName}`
                       }
                     )
                   }
