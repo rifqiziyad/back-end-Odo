@@ -12,14 +12,16 @@ module.exports = {
         transactionAmount,
         transactionStatus,
         transactionMessage,
-        userPin
+        userPin,
+        transactionType
       } = req.body
       const setData = {
         transaction_sender_id: transactionSenderId,
         transaction_receiver_id: transactionReceiverId,
         transaction_amount: transactionAmount,
         transaction_status: transactionStatus,
-        transaction_message: transactionMessage
+        transaction_message: transactionMessage,
+        transaction_type: transactionType
       }
       const checkIdUser = await transactionModel.getUserDataById({
         user_id: transactionSenderId
