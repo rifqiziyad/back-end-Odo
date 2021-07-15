@@ -20,9 +20,8 @@ module.exports = {
         transaction_amount: transactionAmount,
         transaction_status: transactionStatus,
         transaction_message: transactionMessage,
-        transaction_type:
-          // eslint-disable-next-line eqeqeq
-          transactionSenderId == 0 ? 'Top Up' : 'Transfer'
+        // eslint-disable-next-line eqeqeq
+        transaction_type: transactionSenderId == 0 ? 'Top Up' : 'Transfer'
       }
       const checkIdUser = await transactionModel.getUserDataById({
         user_id: transactionSenderId
