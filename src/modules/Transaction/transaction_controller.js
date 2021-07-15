@@ -12,8 +12,7 @@ module.exports = {
         transactionAmount,
         transactionStatus,
         transactionMessage,
-        userPin,
-        transactionType
+        userPin
       } = req.body
       const setData = {
         transaction_sender_id: transactionSenderId,
@@ -21,7 +20,8 @@ module.exports = {
         transaction_amount: transactionAmount,
         transaction_status: transactionStatus,
         transaction_message: transactionMessage,
-        transaction_type: transactionType
+        transaction_type:
+          transactionSenderId === transactionReceiverId ? 'Top Up' : 'Transfer'
       }
       const checkIdUser = await transactionModel.getUserDataById({
         user_id: transactionSenderId
