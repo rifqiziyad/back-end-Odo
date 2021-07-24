@@ -8,7 +8,7 @@ const routerNavigation = require('./routes/')
 require('dotenv').config()
 
 const app = express()
-const port = process.env.PORT || 3004
+const port = process.env.PORT
 
 app.use(morgan('dev'))
 app.use(cors())
